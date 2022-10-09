@@ -1,6 +1,6 @@
 package fuzs.wateringcan.data;
 
-import fuzs.wateringcan.registry.ModRegistry;
+import fuzs.wateringcan.init.ModRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 

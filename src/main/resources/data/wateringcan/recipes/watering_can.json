@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "watering_can",
+  "pattern": [
+    "CM ",
+    "CBC",
+    " C "
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "M": {
+      "item": "minecraft:bone_meal"
+    }
+  },
+  "result": {
+    "item": "wateringcan:watering_can"
+  }
+}

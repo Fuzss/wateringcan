@@ -1,6 +1,6 @@
 package fuzs.wateringcan.world.item;
 
-import fuzs.wateringcan.registry.ModRegistry;
+import fuzs.wateringcan.init.ModRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;

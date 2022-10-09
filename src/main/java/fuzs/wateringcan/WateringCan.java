@@ -1,16 +1,23 @@
 package fuzs.wateringcan;
 
-import fuzs.bagofholding.network.message.S2CLockSlotMessage;
 import fuzs.puzzleslib.config.AbstractConfig;
 import fuzs.puzzleslib.config.ConfigHolder;
 import fuzs.puzzleslib.config.ConfigHolderImpl;
+import fuzs.puzzleslib.core.EnvTypeExecutor;
 import fuzs.puzzleslib.network.MessageDirection;
 import fuzs.puzzleslib.network.NetworkHandler;
 import fuzs.wateringcan.config.ServerConfig;
 import fuzs.wateringcan.data.ModLanguageProvider;
 import fuzs.wateringcan.data.ModRecipeProvider;
-import fuzs.wateringcan.registry.ModRegistry;
+import fuzs.wateringcan.handler.CanInteractionHandler;
+import fuzs.wateringcan.init.ModRegistry;
+import fuzs.wateringcan.network.S2CBlockSprinklesMessage;
+import fuzs.wateringcan.network.S2CEntitySprinklesMessage;
+import fuzs.wateringcan.proxy.ClientProxy;
+import fuzs.wateringcan.proxy.IProxy;
+import fuzs.wateringcan.proxy.ServerProxy;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,6 +36,8 @@ public class WateringCan {
     public static final NetworkHandler NETWORK = NetworkHandler.of(MOD_ID);
     @SuppressWarnings("Convert2MethodRef")
     public static final ConfigHolder<AbstractConfig, ServerConfig> CONFIG = ConfigHolder.server(() -> new ServerConfig());
+    @SuppressWarnings("Convert2MethodRef")
+    public static final IProxy PROXY = EnvTypeExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
@@ -39,11 +48,12 @@ public class WateringCan {
     }
 
     private static void registerHandlers() {
-
+        MinecraftForge.EVENT_BUS.addListener(CanInteractionHandler::onEntityInteract);
     }
 
     private static void registerMessages() {
-        NETWORK.register(S2CLockSlotMessage.class, S2CLockSlotMessage::new, MessageDirection.TO_CLIENT);
+        NETWORK.register(S2CBlockSprinklesMessage.class, S2CBlockSprinklesMessage::new, MessageDirection.TO_CLIENT);
+        NETWORK.register(S2CEntitySprinklesMessage.class, S2CEntitySprinklesMessage::new, MessageDirection.TO_CLIENT);
     }
 
     @SubscribeEvent

@@ -1,7 +1,7 @@
 package fuzs.wateringcan.client;
 
 import fuzs.wateringcan.WateringCan;
-import fuzs.wateringcan.registry.ModRegistry;
+import fuzs.wateringcan.init.ModRegistry;
 import fuzs.wateringcan.world.item.WateringCanItem;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
