@@ -1,18 +1,16 @@
 package fuzs.wateringcan.world.level.block;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public abstract class AbstractSpongeTask {
-    protected final Level level;
+    protected final ServerLevel level;
     protected final Block replacement;
-    private final BlockPos source;
 
-    public AbstractSpongeTask(Level level, Block replacement, BlockPos source) {
+    public AbstractSpongeTask(ServerLevel level, Block replacement) {
         this.level = level;
         this.replacement = replacement;
-        this.source = source;
     }
 
     public boolean mayAdvance(Level level) {
@@ -23,9 +21,7 @@ public abstract class AbstractSpongeTask {
         this.advance(-1);
     }
 
+    public abstract boolean containsBlocksAtChunkPos(int x, int z);
+
     public abstract boolean advance(int amount);
-
-    protected void destroySource() {
-
-    }
 }

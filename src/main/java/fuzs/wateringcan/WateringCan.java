@@ -16,10 +16,17 @@ import fuzs.wateringcan.network.S2CEntitySprinklesMessage;
 import fuzs.wateringcan.proxy.ClientProxy;
 import fuzs.wateringcan.proxy.IProxy;
 import fuzs.wateringcan.proxy.ServerProxy;
+import fuzs.wateringcan.world.level.block.SpongeScheduler;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
@@ -49,6 +56,19 @@ public class WateringCan {
 
     private static void registerHandlers() {
         MinecraftForge.EVENT_BUS.addListener(CanInteractionHandler::onEntityInteract);
+        MinecraftForge.EVENT_BUS.addListener((final TickEvent.WorldTickEvent evt) -> {
+            if (evt.side == LogicalSide.SERVER && evt.phase == TickEvent.Phase.END) {
+                SpongeScheduler.INSTANCE.onServerWorld$Tick((ServerLevel) evt.world);
+            }
+        });
+        MinecraftForge.EVENT_BUS.addListener((final ChunkEvent.Unload evt) -> {
+            SpongeScheduler.INSTANCE.onChunk$Unload(evt.getChunk());
+        });
+        MinecraftForge.EVENT_BUS.addListener((final WorldEvent.Unload evt) -> {
+            if (evt.getWorld() instanceof ServerLevel level) {
+                SpongeScheduler.INSTANCE.onServerWorld$Unload(level);
+            }
+        });
     }
 
     private static void registerMessages() {

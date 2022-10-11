@@ -4,9 +4,9 @@ import fuzs.wateringcan.init.ModRegistry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.*;
@@ -15,21 +15,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RemoveSpongeTask extends AbstractSpongeTask {
-    private static final int DEFAULT_SPONGE_RADIUS = 6;
     private static final Int2ObjectMap<List<BlockPos>> SPONGE_RADIUS = new Int2ObjectOpenHashMap<>();
 
     private final Queue<BlockPos> blocks;
 
-    private RemoveSpongeTask(Level level, BlockPos source, Queue<BlockPos> blocks) {
-        super(level, ModRegistry.SPONGE_AIR_BLOCK.get(), source);
+    private RemoveSpongeTask(ServerLevel level, Queue<BlockPos> blocks) {
+        super(level, ModRegistry.SPONGE_AIR_BLOCK.get());
         this.blocks = blocks;
     }
 
-    public static AbstractSpongeTask createAtPos(ServerLevel level, BlockPos pos, int depth) {
+    public static AbstractSpongeTask createRemoveTask(ServerLevel level, BlockPos pos, int depth) {
         depth++;
         Set<BlockPos> occupiedPositions = findOccupiedPositions(level, pos, depth);
         LinkedList<BlockPos> positions = getCachedSpongeRadius(depth).stream().map(pos::offset).filter(Predicate.not(occupiedPositions::contains)).collect(Collectors.toCollection(LinkedList::new));
-        return new RemoveSpongeTask(level, pos, positions);
+        return new RemoveSpongeTask(level, positions);
     }
 
     private static Set<BlockPos> findOccupiedPositions(ServerLevel level, BlockPos pos, int depth) {
@@ -58,5 +57,15 @@ public class RemoveSpongeTask extends AbstractSpongeTask {
             }
         }
         return this.blocks.isEmpty();
+    }
+
+    @Override
+    public boolean containsBlocksAtChunkPos(int x, int z) {
+        for (BlockPos pos : this.blocks) {
+            if (SectionPos.blockToSection(pos.getX()) == x && SectionPos.blockToSection(pos.getZ()) == z) {
+                return true;
+            }
+        }
+        return false;
     }
 }
