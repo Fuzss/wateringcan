@@ -20,12 +20,10 @@ import java.util.Queue;
 public class SetSpongeTask extends AbstractSpongeTask {
     private final Queue<Tuple<BlockPos, Integer>> queue;
     private final int distance;
-    private final BlockPos source;
     private boolean hasDestroyedSource;
 
     private SetSpongeTask(ServerLevel level, Block replacement, BlockPos source, int distance) {
-        super(level, replacement);
-        this.source = source;
+        super(level, source, replacement);
         this.distance = distance;
         this.queue = Lists.newLinkedList();
         this.queue.add(new Tuple<>(this.source, 0));

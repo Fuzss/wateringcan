@@ -19,8 +19,8 @@ public class RemoveSpongeTask extends AbstractSpongeTask {
 
     private final Queue<BlockPos> blocks;
 
-    private RemoveSpongeTask(ServerLevel level, Queue<BlockPos> blocks) {
-        super(level, ModRegistry.SPONGE_AIR_BLOCK.get());
+    private RemoveSpongeTask(ServerLevel level, BlockPos source, Queue<BlockPos> blocks) {
+        super(level, source, ModRegistry.SPONGE_AIR_BLOCK.get());
         this.blocks = blocks;
     }
 
@@ -28,7 +28,7 @@ public class RemoveSpongeTask extends AbstractSpongeTask {
         depth++;
         Set<BlockPos> occupiedPositions = findOccupiedPositions(level, pos, depth);
         LinkedList<BlockPos> positions = getCachedSpongeRadius(depth).stream().map(pos::offset).filter(Predicate.not(occupiedPositions::contains)).collect(Collectors.toCollection(LinkedList::new));
-        return new RemoveSpongeTask(level, positions);
+        return new RemoveSpongeTask(level, pos, positions);
     }
 
     private static Set<BlockPos> findOccupiedPositions(ServerLevel level, BlockPos pos, int depth) {

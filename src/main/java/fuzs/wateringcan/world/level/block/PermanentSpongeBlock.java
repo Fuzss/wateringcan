@@ -1,6 +1,5 @@
 package fuzs.wateringcan.world.level.block;
 
-import fuzs.wateringcan.WateringCan;
 import fuzs.wateringcan.init.ModRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
